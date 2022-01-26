@@ -1,35 +1,37 @@
 <template>
-  <h1>{{ title }}</h1>
-  <div v-if="showModal">
-    <Modal
-      :header="header"
-      :text="text"
-      theme="sale"
-      :showModal="showModal"
-      @close="toggleModal"
-    />
-  </div>
-  <button @click="toggleModal">open modal</button>
+  <h1>Reaction Timer</h1>
+  <button @click="start" :disabled="isPlaying">play</button>
+  <Block v-if="isPlaying" :delay="delay" @end="endGame" />
+  <Results :score="score" v-if="showResult" />
 </template>
 
 <script>
-import Modal from "./components/Modal.vue";
+import Block from "./components/Block.vue";
+import Results from "./components/Results.vue";
 export default {
   name: "App",
   components: {
-    Modal,
+    Block,
+    Results,
   },
   data() {
     return {
-      title: "my first vue app !",
-      header: "sign up for giveaway",
-      text: "hello world",
-      showModal: false,
+      isPlaying: false,
+      delay: null,
+      score: null,
+      showResult: false,
     };
   },
   methods: {
-    toggleModal() {
-      this.showModal = !this.showModal;
+    start() {
+      this.delay = 2000 + Math.random() * 5000;
+      this.isPlaying = true;
+      this.showResult = false;
+    },
+    endGame(reactionTime) {
+      this.score = reactionTime;
+      this.isPlaying = false;
+      this.showResult = true;
     },
   },
 };
@@ -41,7 +43,13 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+  color: #444;
   margin-top: 60px;
+}
+.btn-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 8px;
 }
 </style>
